@@ -1,20 +1,25 @@
 import { useState } from 'react'
 
-function ArtistAlbumList() {
+function ArtistAlbumList(props) {
+
+    let albumID     = props.album.id; 
+    let albumURL    = "/album/" + albumID;
+    let albumName   = props.album.name;
+    let albumThumb  = props.album.thumb;
 
     return (
         <>
             <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                 <div className="thumbnail">
                     <img
-                        src="https://i.scdn.co/image/757378d73eedc6a53cff69b49eca173fccc9ad02"
-                        alt="Giác Quan Thứ, Vol. 6"
+                        src={albumThumb}
+                        alt={albumName}
                         className="img-responsive"
                     />
                     <div className="caption">
                     <h5>
-                        <a href="/album/6GzEDxxX5HJBdR6iohvrPc">
-                        Giác Quan Thứ, Vol. 6
+                        <a href={albumURL}>
+                            {albumName}
                         </a>
                     </h5>
                     </div>

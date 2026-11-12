@@ -1,17 +1,22 @@
 import { useState } from 'react'
 
-function ArtistInfo() {
 
+function ArtistInfo(props) {
+    // console.log("props:",props);
+
+    let artistName      = props.artist.name;
+    let artistThumb     = props.artist.thumb;
+    
     return (
         <>
             <div className="col-sm-4 col-md-4">
                 <img
-                    src="https://i.scdn.co/image/23b3caeb7f6d181787bd5bd04f5c0ddbc332dcab"
-                    alt="Thu Minh"
+                    src={artistThumb}
+                    alt={artistName}
                     className="img-rounded img-responsive"
                 />
                 <blockquote style={{ marginTop: 20 }}>
-                <p>Thu Minh</p>
+                <p>{artistName}</p>
                 </blockquote>
                 <p>
                     <i className="glyphicon glyphicon-play-circle" />
@@ -24,9 +29,6 @@ function ArtistInfo() {
                         {" "}
                         View Spotify
                     </a>
-
-                    <br />
-                    <br />
                     
                     <i className="glyphicon glyphicon-play-circle" /> Genres:
                     <span className="label label-warning" style={{ marginRight: 5 }}>
