@@ -4,9 +4,10 @@ import Store from '../store/Store';
 
 function ArtistList() {
 
-    const dataStore     = Store((state) => state.dataStore);
-    const loading       = Store((state) => state.loading);
-    const error         = Store((state) => state.error);
+    const dataStore         = Store((state) => state.dataStore);
+    const loading           = Store((state) => state.loading);
+    const loadingComplete   = Store((state) => state.loadingComplete);
+    const error             = Store((state) => state.error);
 
     let artistList = [];
     if (dataStore === null || dataStore === undefined) {

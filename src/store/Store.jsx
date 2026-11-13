@@ -56,15 +56,13 @@ const Store = create((set, get) => ({
             url = configs.BASE_URL + `artists?` +
                         `search_value=${encodeURIComponent(strSearch)}&` +
                         `search_field=${encodeURIComponent(searchField)}`;
-            console.log("url strSearch:",url);
         }
-
-
 
         try {
             const res = await fetch(url);
             const data = await res.json();
             set({ dataStore: data });
+            set({ loadingComplete:true});
         } catch (err) {
             set({ error: err.message });
         } finally {
@@ -80,7 +78,7 @@ const Store = create((set, get) => ({
             const res = await fetch(url);
             if (!res.ok) throw new Error(`Lỗi ${res.status}`);
             const json = await res.json();
-            console.log('data res:', json);
+
             set({ artist: json.data ?? json });
             set({ albumsArtis: json.data.albums ?? json });
             set({ loadingComplete:true});
@@ -100,12 +98,13 @@ const Store = create((set, get) => ({
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error(`Lỗi ${res.status}`);
+
             const json = await res.json();
-            console.log('data res:', json);
-            console.log('json.data.tracks:',json.data.tracks);
+
             set({ album: json.data ?? json });
             set({ tracks: json.data.tracks ?? json });
             set({ loadingComplete:true});
+
         } catch (err) {
             set({ albumError: err.message });
         } finally {
