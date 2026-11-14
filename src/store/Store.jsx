@@ -14,6 +14,7 @@ const defaultState = {
     albumsArtis:    null,
     artistLoading:  false,
     artistError:    null,
+    genresArtist:   [],
 
     /* Chi tiết một album */
     album:              null,
@@ -61,6 +62,7 @@ const Store = create((set, get) => ({
         try {
             const res = await fetch(url);
             const data = await res.json();
+            console.log('Data:',data);
             set({ dataStore: data });
             set({ loadingComplete:true});
         } catch (err) {
@@ -78,10 +80,11 @@ const Store = create((set, get) => ({
             const res = await fetch(url);
             if (!res.ok) throw new Error(`Lỗi ${res.status}`);
             const json = await res.json();
-
+            // console.log(json);
             set({ artist: json.data ?? json });
             set({ albumsArtis: json.data.albums ?? json });
             set({ loadingComplete:true});
+            set({ genresArtist:json.data.genres});
         } catch (err) {
             set({ artistError: err.message });
         } finally {

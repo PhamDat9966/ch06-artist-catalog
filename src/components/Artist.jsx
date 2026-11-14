@@ -8,6 +8,14 @@ function Artist(props) {
     let ArtistID    = props.artist.id;  
     
     let ArtistUrl   = "artist/" + ArtistID;
+    let genres      = '';
+    let GenresArray = props.artist.genres;
+
+    genres = GenresArray.map((genre, index) => (
+            <span className="label label-warning" style={{ marginRight: 5 }}>
+                {genre.name}
+            </span>
+        ));
 
     return (
         <>
@@ -23,12 +31,7 @@ function Artist(props) {
                         <a href={ArtistUrl}>{ArtistName}</a>
                     </h3>
                     <p>
-                        <span
-                            className="label label-warning"
-                            style={{ marginRight: 5 }}
-                        >
-                        vietnamese pop
-                        </span>
+                        {genres}
                     </p>
                     </div>
                 </div>

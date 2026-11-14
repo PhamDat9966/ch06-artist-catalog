@@ -27,7 +27,6 @@ function ArtistPage() {
         fetchArtist(artistId);
     }, [artistId, fetchArtist]);                // đổi id thì tải lại
 
-    console.log("artist:",artist);
 
     let ArtistAlbumList = null;
     let Albums          = [];

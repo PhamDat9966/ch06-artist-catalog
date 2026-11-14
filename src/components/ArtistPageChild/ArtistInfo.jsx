@@ -2,10 +2,21 @@ import { useState } from 'react'
 
 
 function ArtistInfo(props) {
-    // console.log("props:",props);
 
     let artistName      = props.artist.name;
     let artistThumb     = props.artist.thumb;
+
+    let xhtmlArtistGenres = null;
+    let ArtistGenres      = [];
+    ArtistGenres          = (props.artist.genres) ? props.artist.genres : [];     
+
+    if(ArtistGenres.length > 0){
+        xhtmlArtistGenres = ArtistGenres.map((genre) => (
+                    <span key={genre.id} className="label label-warning" style={{ marginRight: 5 }}>
+                        {genre.name}
+                    </span>
+        ));
+    }
     
     return (
         <>
@@ -18,22 +29,9 @@ function ArtistInfo(props) {
                 <blockquote style={{ marginTop: 20 }}>
                 <p>{artistName}</p>
                 </blockquote>
-                <p>
-                    <i className="glyphicon glyphicon-play-circle" />
-
-                    <a
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        href="https://open.spotify.com/artist/4mzMFxVZNS2uCVNdsVFoj5"
-                    >
-                        {" "}
-                        View Spotify
-                    </a>
-                    
+                <p> 
                     <i className="glyphicon glyphicon-play-circle" /> Genres:
-                    <span className="label label-warning" style={{ marginRight: 5 }}>
-                        vietnamese pop
-                    </span>
+                    {xhtmlArtistGenres}
                 </p>
             </div>
         </>
