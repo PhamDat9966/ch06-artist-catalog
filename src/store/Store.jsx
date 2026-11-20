@@ -42,23 +42,41 @@ const Store = create((set, get) => ({
 
     // Action fetch: chuyển toàn bộ logic gọi API từ useTasks.jsx vào đây
     fetchStore: async () => {
-        // get() luôn trả về state MỚI NHẤT tại thời điểm gọi, kể cả sau await
-        const { strSearch, searchField } = get();
-
         set({ loading: true, error: null });
 
-        let url = configs.BASE_URL + `artists?`;
-            // `search=${encodeURIComponent(strSearch)}&` +
-            // `search_field=${encodeURIComponent(searchField)}&` +
-            // `order_by=${encodeURIComponent(orderBy)}&` +
-            // `order_dir=${encodeURIComponent(orderDir)}`;
+        // get() luôn trả về state MỚI NHẤT tại thời điểm gọi, kể cả sau await
+        const { strSearch, searchField, page, limit } = get();
 
-        if(strSearch !=="" && strSearch !== null){
-            url = configs.BASE_URL + `artists?` +
-                        `search_value=${encodeURIComponent(strSearch)}&` +
-                        `search_field=${encodeURIComponent(searchField)}`;
+        let params = {
+            limit:        8,
+            offset:       (page - 1) * limit
         }
 
+        // chỉ thêm tham số tìm kiếm khi có từ khóa
+        if (strSearch !== "" && strSearch !== null) {
+            params.search_value = encodeURIComponent(strSearch);
+            params.search_field = encodeURIComponent(searchField);
+            /*
+                Khi dùng encodeURIComponent("Tom & Jerry"), chuỗi đổi thành "Tom%20%26%20Jerry"
+            */
+        }
+
+        //Chuyển params thành chuỗi yêu cầu queryString để đặt phía sau url:
+        const queryString = new URLSearchParams(params).toString();
+
+        const url = configs.BASE_URL + `artists` + `?`+ `${queryString}`;
+
+        /* Cách cũ:
+
+            let url = configs.BASE_URL + `artists?`;
+            if(strSearch !=="" && strSearch !== null){
+                    url = configs.BASE_URL + `artists` + `?` +
+                                `search_value=${encodeURIComponent(strSearch)}&` +
+                                `search_field=${encodeURIComponent(searchField)}&` +
+                                `limit=8&`+
+                                `offset=0`;
+            }
+        */
         try {
             const res = await fetch(url);
             const data = await res.json();

@@ -26,6 +26,7 @@ function ArtistInfo(props) {
                     alt={artistName}
                     className="img-rounded img-responsive"
                 />
+                
                 <blockquote style={{ marginTop: 20 }}>
                 <p>{artistName}</p>
                 </blockquote>
