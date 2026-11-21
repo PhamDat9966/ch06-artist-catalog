@@ -26,6 +26,10 @@ const defaultState = {
     strSearch: "",
     searchField: "name",   // thêm mới: để store tự chủ, không cần truyền qua tham số hàm
 
+    /* Phân trang */
+    page: 1,
+    limit: 4,
+
 };
 
 const Store = create((set, get) => ({
@@ -37,8 +41,10 @@ const Store = create((set, get) => ({
     setError: (value) => set({ error: value }),
 
     // Actions cho search / sort / form
-    setStrSearch: (value) => set({ strSearch: value }),
-    setSearchField: (value) => set({ searchField: value }),
+    //Thêm action, đồng thời đưa page về 1 khi tìm kiếm mới:
+    setStrSearch: (value) => set({ strSearch: value, page: 1 }),
+    setSearchField: (value) => set({ searchField: value, page: 1 }),
+    setPage: (value) => set({ page: value }),
 
     // Action fetch: chuyển toàn bộ logic gọi API từ useTasks.jsx vào đây
     fetchStore: async () => {
@@ -48,14 +54,19 @@ const Store = create((set, get) => ({
         const { strSearch, searchField, page, limit } = get();
 
         let params = {
-            limit:        8,
+            limit:        4,
             offset:       (page - 1) * limit
         }
 
+        console.log("params:",params,"page:",page);
+
         // chỉ thêm tham số tìm kiếm khi có từ khóa
         if (strSearch !== "" && strSearch !== null) {
-            params.search_value = encodeURIComponent(strSearch);
-            params.search_field = encodeURIComponent(searchField);
+            params.search_value = strSearch;
+            params.search_field = searchField;
+
+            // params.search_value = encodeURIComponent(strSearch);
+            // params.search_field = encodeURIComponent(searchField);
             /*
                 Khi dùng encodeURIComponent("Tom & Jerry"), chuỗi đổi thành "Tom%20%26%20Jerry"
             */

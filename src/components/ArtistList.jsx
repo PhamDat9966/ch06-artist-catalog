@@ -9,11 +9,13 @@ function ArtistList() {
     const loadingComplete   = Store((state) => state.loadingComplete);
     const error             = Store((state) => state.error);
 
+    // console.log('dataStore',dataStore);
+
     let artistList = [];
     if (dataStore === null || dataStore === undefined) {
         artistList = [];
     } else {
-        artistList = dataStore.artists.data;
+        artistList = dataStore.artists;
     }
 
     if (loading) {

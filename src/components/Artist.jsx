@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 function Artist(props) {
-    console.log("propsArtist:",props);
+    // console.log("propsArtist:",props);
     let thumbArtist = 'http://artist-catalog.test/images/artist/' + props.artist.thumb;
     let thumbAlt    = props.artist.name;    
     let ArtistName  = props.artist.name;
