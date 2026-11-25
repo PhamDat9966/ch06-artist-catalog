@@ -14,7 +14,10 @@ function ArtistPage() {
     const artistLoading         = Store((s) => s.artistLoading);
     const artistError           = Store((s) => s.artistError);
     const loadingComplete       = Store((s) => s.loadingComplete);
-    const fetchArtist           = Store((s) => s.fetchArtist);
+
+    /* Các phương thức lấy dữ liệu */
+    // const fetchArtist           = Store((s) => s.fetchArtist);
+    const AxiosArtist           = Store((s) => s.AxiosArtist);
 
     let artist = [];
     if (artistStore === null || artistStore === undefined) {
@@ -23,10 +26,15 @@ function ArtistPage() {
         artist = artistStore;
     }
 
-    useEffect(() => {
-        fetchArtist(artistId);
-    }, [artistId, fetchArtist]);                // đổi id thì tải lại
+    /* Lấy thông tin nghệ sĩ với fetch */
+    // useEffect(() => {
+    //     fetchArtist(artistId);
+    // }, [artistId, fetchArtist]);                // đổi id thì tải lại
 
+    /* Lấy thông tin nghệ sĩ với axios */
+    useEffect(() => {
+        AxiosArtist(artistId);
+    }, [artistId, AxiosArtist]);                // đổi id thì tải lại    
 
     let ArtistAlbumList = null;
     let Albums          = [];
@@ -34,7 +42,7 @@ function ArtistPage() {
 
     if(Albums.length > 0){
         ArtistAlbumList = Albums.map((album, index) => (
-            <ArtistAlbum order={index + 1} album={album} key={index} />
+            <ArtistAlbum order={index + 1} album={album} key={album.id} />
         ));
     }else{
         if(loadingComplete == false){

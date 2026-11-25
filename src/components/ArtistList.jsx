@@ -47,7 +47,7 @@ function ArtistList() {
     let xhtml = null
     if(artistList.length > 0){
         xhtml = artistList.map((artist, index) => (
-            <Artist order={index + 1} artist={artist} key={index} />
+            <Artist order={index + 1} artist={artist} key={artist.id} />
         ));
     }else{
         return (  

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import * as configs from './../constands/Config';
+import axios from 'axios';
 
 const defaultState = {
 
@@ -91,7 +92,7 @@ const Store = create((set, get) => ({
         try {
             const res = await fetch(url);
             const data = await res.json();
-            console.log('Data:',data);
+            // console.log('Data:',data);
             set({ dataStore: data });
             set({ loadingComplete:true});
         } catch (err) {
@@ -101,10 +102,12 @@ const Store = create((set, get) => ({
         }
     },
 
-    // Lấy MỘT ca sĩ theo id (id truyền từ component)
+    /* Lấy MỘT ca sĩ theo id (id truyền từ component) */
     fetchArtist: async (id) => {
+
         set({ artist: null, artistLoading: true, artistError: null, loadingComplete: false });
         const url = configs.BASE_URL + `artists/${id}`;
+
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error(`Lỗi ${res.status}`);
@@ -116,6 +119,29 @@ const Store = create((set, get) => ({
             set({ genresArtist:json.data.genres});
         } catch (err) {
             set({ artistError: err.message });
+        } finally {
+            set({ artistLoading: false });
+        }
+    },
+
+    /* Lấy MỘT ca sĩ theo id với Axios (id truyền từ component) */
+    AxiosArtist: async (id) => {
+        set({ artist: null, artistLoading: true, artistError: null, loadingComplete: false });
+        const url = configs.BASE_URL + `artists/${id}`;
+
+        try {
+            const res = await axios.get(url);
+            const json = res.data; // tương đương json trong bản fetch
+
+            set({ artist: json.data ?? json });
+            set({ albumsArtis: json.data.albums ?? json });
+            set({ loadingComplete: true });
+            set({ genresArtist: json.data.genres });
+        } catch (err) {
+            const message = err.response
+                ? `Lỗi ${err.response.status}`   // server trả 4xx/5xx
+                : err.message;                   // lỗi mạng, timeout...
+            set({ artistError: message });
         } finally {
             set({ artistLoading: false });
         }

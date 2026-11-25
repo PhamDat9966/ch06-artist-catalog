@@ -12,7 +12,7 @@ function Artist(props) {
     let GenresArray = props.artist.genres;
 
     genres = GenresArray.map((genre, index) => (
-            <span className="label label-warning" style={{ marginRight: 5 }}>
+            <span className="label label-warning" style={{ marginRight: 5 }} key={genre.id}>
                 {genre.name}
             </span>
         ));
