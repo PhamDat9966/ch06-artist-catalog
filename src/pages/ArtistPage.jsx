@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import ArtistInfo from '../components/ArtistPageChild/ArtistInfo'
 import ArtistAlbum from '../components/ArtistPageChild/ArtistAlbum'
 import Store from '../store/Store'
+import NotfoundPage from './NotfoundPage';
 
-
+import Pagination from '../components/elements/Pagination';
 
 function ArtistPage() {
 
@@ -16,25 +17,53 @@ function ArtistPage() {
     const loadingComplete       = Store((s) => s.loadingComplete);
 
     /* Các phương thức lấy dữ liệu */
-    // const fetchArtist           = Store((s) => s.fetchArtist);
     const AxiosArtist           = Store((s) => s.AxiosArtist);
-
-    let artist = [];
-    if (artistStore === null || artistStore === undefined) {
-        artist = [];
-    } else {
-        artist = artistStore;
-    }
-
-    /* Lấy thông tin nghệ sĩ với fetch */
-    // useEffect(() => {
-    //     fetchArtist(artistId);
-    // }, [artistId, fetchArtist]);                // đổi id thì tải lại
+    const AxiosArtistAlbums     = Store((s) => s.AxiosArtistAlbums);
 
     /* Lấy thông tin nghệ sĩ với axios */
     useEffect(() => {
         AxiosArtist(artistId);
     }, [artistId, AxiosArtist]);                // đổi id thì tải lại    
+
+    useEffect(() => {
+        AxiosArtistAlbums(artistId);
+    }, [artistId, AxiosArtistAlbums]);                // đổi id thì tải lại   
+
+    // console.log("artistError:",artistError);
+    if(artistError !== null){
+
+        if(artistError === "404"){
+            let message = "Nghệ sĩ không tồn tại";
+            return (
+                        <>  
+                            <NotfoundPage message={message}/>
+                        </>
+                    )
+        }
+
+    }
+
+    let artist = {
+        id: null,
+        name: null,
+        thumb: null,
+        albums : []
+    };
+    
+    // console.log("artistStore:",artistStore);
+
+    if (artistStore === null || artistStore === undefined) {
+        artist = {
+                    id: null,
+                    name: null,
+                    thumb: null,
+                    albums : []
+                };
+    } else {
+        artist = artistStore;
+    }
+
+    /* Lấy albums theo ID nghệ sĩ với axios */
 
     let ArtistAlbumList = null;
     let Albums          = [];
@@ -78,6 +107,9 @@ function ArtistPage() {
                             <div className="panel-body list-albums">
                                 {ArtistAlbumList}
                             </div>
+                            <div className="panel-body">
+                                <Pagination />
+                            </div>   
                         </div>
                     </div>
                </div>

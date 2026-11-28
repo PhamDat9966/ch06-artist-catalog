@@ -9,13 +9,23 @@ const defaultState = {
     loading:            false,
     error:              null,
     loadingComplete:    false,
+    artistsTotal:   0,
+    artistsPage:    1,
+    artistsLimit:   4,
 
     /* Chi tiết một ca sĩ */
     artist:         null,
-    albumsArtis:    null,
     artistLoading:  false,
     artistError:    null,
     genresArtist:   [],
+
+    /* Danh sách album của 1 nghệ sĩ */
+    albumsArtist:  [],
+    albumsLoading: false,
+    albumsError:   null,
+    albumsTotal:   0,
+    albumsPage:    1,
+    albumsLimit:   4,
 
     /* Chi tiết một album */
     album:              null,
@@ -47,15 +57,22 @@ const Store = create((set, get) => ({
     setSearchField: (value) => set({ searchField: value, page: 1 }),
     setPage: (value) => set({ page: value }),
 
-    // Action fetch: chuyển toàn bộ logic gọi API từ useTasks.jsx vào đây
-    fetchStore: async () => {
+    setAlbumsPage: (value) => set({ albumsPage: value }),
+    
+
+    // Action AxiosStore: chuyển toàn bộ logic gọi API từ useTasks.jsx vào đây
+    AxiosStore: async () => {
         set({ loading: true, error: null });
 
         // get() luôn trả về state MỚI NHẤT tại thời điểm gọi, kể cả sau await
-        const { strSearch, searchField, page, limit } = get();
+        const { strSearch, searchField, page, limit, artistsPage, artistsLimit } = get();
+
+        /* chuyển artistsLimit,artistsPage cho giá trị mặc định của pagination là limit và page  */
+        // set({limit:artistsLimit});
+        // set({page:artistsPage})
 
         let params = {
-            limit:        4,
+            limit:        limit,
             offset:       (page - 1) * limit
         }
 
@@ -65,12 +82,6 @@ const Store = create((set, get) => ({
         if (strSearch !== "" && strSearch !== null) {
             params.search_value = strSearch;
             params.search_field = searchField;
-
-            // params.search_value = encodeURIComponent(strSearch);
-            // params.search_field = encodeURIComponent(searchField);
-            /*
-                Khi dùng encodeURIComponent("Tom & Jerry"), chuỗi đổi thành "Tom%20%26%20Jerry"
-            */
         }
 
         //Chuyển params thành chuỗi yêu cầu queryString để đặt phía sau url:
@@ -78,21 +89,11 @@ const Store = create((set, get) => ({
 
         const url = configs.BASE_URL + `artists` + `?`+ `${queryString}`;
 
-        /* Cách cũ:
-
-            let url = configs.BASE_URL + `artists?`;
-            if(strSearch !=="" && strSearch !== null){
-                    url = configs.BASE_URL + `artists` + `?` +
-                                `search_value=${encodeURIComponent(strSearch)}&` +
-                                `search_field=${encodeURIComponent(searchField)}&` +
-                                `limit=8&`+
-                                `offset=0`;
-            }
-        */
         try {
-            const res = await fetch(url);
-            const data = await res.json();
-            // console.log('Data:',data);
+            const res = await axios.get(url);
+            const data = await res.data;
+            console.log("axiosStore:",data);
+
             set({ dataStore: data });
             set({ loadingComplete:true});
         } catch (err) {
@@ -134,16 +135,45 @@ const Store = create((set, get) => ({
             const json = res.data; // tương đương json trong bản fetch
 
             set({ artist: json.data ?? json });
-            set({ albumsArtis: json.data.albums ?? json });
+            // set({ albumsArtis: json.data.albums ?? json });
             set({ loadingComplete: true });
             set({ genresArtist: json.data.genres });
+
         } catch (err) {
             const message = err.response
-                ? `Lỗi ${err.response.status}`   // server trả 4xx/5xx
-                : err.message;                   // lỗi mạng, timeout...
+                ? `${err.response.status}`   // server trả 4xx/5xx
+                : err.message;     
+                set({artistError: message});              // lỗi mạng, timeout...
+                console.log("err Massage:",message);
             set({ artistError: message });
         } finally {
             set({ artistLoading: false });
+        }
+    },
+
+    AxiosArtistAlbums: async (id) => {
+        const { albumsPage, albumsLimit, limit, page } = get();
+        set({ albumsLoading: true, albumsError: null });
+
+        set({limit:albumsLimit});
+        set({page:albumsPage})
+
+        try {
+            const res = await axios.get(configs.BASE_URL + `artists/${id}/albums`, {
+                params: {
+                    limit:  limit,
+                    offset: (page - 1) * limit,
+                },
+            });
+            const json = res.data;
+            set({
+                albumsArtist: json.data ?? [],
+                albumsTotal:  json.meta?.total ?? 0,
+            });
+        } catch (err) {
+            set({ albumsError: err.response ? `${err.response.status}` : err.message });
+        } finally {
+            set({ albumsLoading: false });
         }
     },
 

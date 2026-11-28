@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Artist from './Artist';
-import Store from '../store/Store';
+// import Store from '../store/Store';
+import Store from '../../store/Store';
 
 function ArtistList() {
 
@@ -67,11 +68,6 @@ function ArtistList() {
             </>
         )
     }
-
-
-    // if(1>0){
-    //     xhtml = <div><Artist /><Artist /><Artist /><Artist /></div>;
-    // }
 
     return (
         <>

@@ -6,15 +6,15 @@ function Pagination() {
     const limit     = Store((s) => s.limit);
     const setPage   = Store((s) => s.setPage);
 
-    console.log('dataStore:',dataStore);
     let   total      = 0;
     if(dataStore !== null){
         total       = dataStore?.status_count?.[0]?.count ?? 0;
     }   
-    // const total      = dataStore.artists.total ?? 0;
 
     const totalPages = Math.ceil(total / limit);
 
+    console.log("setPages:",page);
+    
     if (totalPages <= 1) return null;       // chỉ 1 trang thì không cần hiện
 
     const items = [];
